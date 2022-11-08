@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'StockWatchDB',
         'USER': 'postgres',
-        'PASSWORD': 'prout66',
+        'PASSWORD': 'postgres',
         'HOST': 'localhost'
     }
 }
