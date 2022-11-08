@@ -4,5 +4,6 @@ from . import views
 APP_NAME = 'StockWatch'
 
 urlpatterns = [
-    path('list/', views.list_products)
+    path('list/', views.list_products, name="list"),
+    path('insertgtin/', views.insert_gtin, name="insertgtin")
 ]
