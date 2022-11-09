@@ -20,6 +20,22 @@
         <div class="card-header">
             <h1> <i class="fa-solid fa-eye"></i> STOCKWATCH </h1>
         </div>
+        {% if messages %}
+        {% for msg in messages %}
+        {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>ERROR: </strong>
+            {{msg}}
+        </div>
+        {% endif %}
+        {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>DONE: </strong>
+            {{msg}}
+        </div>
+        {% endif%}
+        {% endfor %}
+        {% endif %}
         <div class="card-body">
             <div class="container">
                 <div class="row">
@@ -32,6 +48,27 @@
                             </div>
                             <button type="submit" class="btn btn-primary my-2">Search</button>
                         </form>
+                        <div class="card my-5">
+                            <div class="card-header text-center">
+                                <h4> <i class="fa-sharp fa-solid fa-cart-plus"></i> Add GTIN </h4>
+                            </div>
+                            <div class="card-body">
+                                <form action="{% url 'insertgtin'%}" method="post" autocomplete="off">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="inputGtin">GTIN</label>
+                                        <input type="text" class="form-control" id="inputGtin" name="gtin"
+                                            placeholder="Enter GTIN">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputDateGtin">Expiring date</label>
+                                        <input type="date" class="form-control" id="inputDateGtin" name="date"
+                                            placeholder="Enter Date">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary my-2">Add GTIN</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <div class="col">
                         <div class="table-wrapper-scroll-y my-custom-scrollbar">
@@ -50,7 +87,9 @@
                                     {% for product in product_list %}
                                     <tr>
                                         <th scope="row"> {{product.gtin}} </th>
-                                        <td><h6> {{product.date}} </h6></td>
+                                        <td>
+                                            <h6> {{product.date}} </h6>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -59,41 +98,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    {% if messages %}
-    {% for msg in messages %}
-    {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>ERROR: </strong>
-        {{msg}}
-    </div>
-    {% endif %}
-    {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>SUCCESS: </strong>
-        {{msg}}
-    </div>
-    {% endif%}
-    {% endfor %}
-    {% endif %}
-    <div class="card mx-auto my-5" style="width: 18rem;">
-        <div class="card-header text-center">
-            <h4> <i class="fa-sharp fa-solid fa-cart-plus"></i> Add GTIN </h4>
-        </div>
-        <div class="card-body">
-            <form action="{% url 'insertgtin'%}" method="post" autocomplete="off">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="inputGtin">GTIN</label>
-                    <input type="text" class="form-control" id="inputGtin" name="gtin" placeholder="Enter GTIN">
-                </div>
-                <div class="form-group">
-                    <label for="inputDateGtin">Expiring date</label>
-                    <input type="date" class="form-control" id="inputDateGtin" name="date" placeholder="Enter Date">
-                </div>
-                <button type="submit" class="btn btn-primary my-2">Add GTIN</button>
-            </form>
         </div>
     </div>
 
