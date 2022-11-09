@@ -18,7 +18,7 @@
 <body>
     <div class="card">
         <div class="card-header">
-            <h1> <i class="fa-solid fa-eye"></i> STOCKWATCH </h1>
+            <img src="https://i.ibb.co/C8ZNwvL/stockwatch.png" alt="stockwatch" alt="stockwatch" width="500">
         </div>
         {% if messages %}
         {% for msg in messages %}
@@ -40,17 +40,24 @@
             <div class="container">
                 <div class="row">
                     <div class="col-3">
-                        <form action="{% url 'srchgtin'%}" method="post" autocomplete="off">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="srchgtin" name="gtinasked"
-                                    placeholder="Search GTIN">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                <h4> <i class="fa-solid fa-barcode"></i> Search GTIN </h4>
                             </div>
-                            <button type="submit" class="btn btn-primary my-2">Search</button>
-                        </form>
+                            <div class="card-body">
+                                <form action="{% url 'srchgtin'%}" method="post" autocomplete="off">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="srchgtin" name="gtinasked"
+                                            placeholder="Enter GTIN">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary my-2">Search</button>
+                                </form>
+                            </div>
+                        </div>
                         <div class="card my-5">
                             <div class="card-header text-center">
-                                <h4> <i class="fa-sharp fa-solid fa-cart-plus"></i> Add GTIN </h4>
+                                <h4> <i class="fa-sharp fa-solid fa-cart-plus"></i> Add Product </h4>
                             </div>
                             <div class="card-body">
                                 <form action="{% url 'insertgtin'%}" method="post" autocomplete="off">
@@ -65,7 +72,7 @@
                                         <input type="date" class="form-control" id="inputDateGtin" name="date"
                                             placeholder="Enter Date">
                                     </div>
-                                    <button type="submit" class="btn btn-primary my-2">Add GTIN</button>
+                                    <button type="submit" class="btn btn-primary my-2">Add Product</button>
                                 </form>
                             </div>
                         </div>
