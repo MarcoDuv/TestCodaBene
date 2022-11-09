@@ -27,6 +27,7 @@
                         <form action="{% url 'srchgtin'%}" method="post" autocomplete="off">
                             {% csrf_token %}
                             <div class="form-group">
+                                <label for="srchgtin">GTIN</label>
                                 <input type="text" class="form-control" id="srchgtin" name="gtinasked"
                                     placeholder="Search GTIN">
                             </div>
@@ -39,18 +40,16 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">
-                                            <h4>GTIN</h4>
-                                        </th>
-                                        <th scope="col">
-                                            <h4>Expiring Date</h4>
+                                            <h3>Expiring dates of product {{product_list.0.gtin}}:</h5>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for product in product_list %}
                                     <tr>
-                                        <th scope="row"> {{product.gtin}} </th>
-                                        <td><h6> {{product.date}} </h6></td>
+                                        <th scope="row">
+                                            <h6> {{product.date}} </h6>
+                                        </th>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

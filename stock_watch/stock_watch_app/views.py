@@ -30,9 +30,16 @@ def insert_gtin(request:HttpRequest):
         date = None
 
     if (new_gtin is not None) & (date is not None):
-        product = Product(gtin = new_gtin, date = request.POST['date'])
-        product.save()
-        messages.success(request, "New GTIN added successfully")
+        try:
+            existing_product = Product.objects.get(gtin = new_gtin)
+        except:
+            new_product = Product(gtin = new_gtin, date = request.POST['date'])
+            new_product.save()
+            messages.success(request, "GTIN created sucessfully")
+        else:
+            existing_product.date = date
+            existing_product.save()
+            messages.success(request, "GTIN updated sucessfully")
     return redirect('/stock_watch_app/list/')
 
 def srch_gtin(request:HttpRequest):
@@ -45,7 +52,7 @@ def srch_gtin(request:HttpRequest):
         gtin_asked = int(request.POST['gtinasked']) #TODO Sort by date
     except ValueError:
         if gtin_asked == '':    # If it's empty we display all the products (ie: delete filter)
-            context = {'product_list': Product.objects.all()}
+            return redirect('/stock_watch_app/list/')
         else:
             messages.error(request, "GTIN must be a number")
             context = None
@@ -58,4 +65,4 @@ def srch_gtin(request:HttpRequest):
             messages.error(request, "This GTIN is not registered")
             context = None
 
-    return render(request, 'stock_watch_app/products_list.html', context=context)
+    return render(request, 'stock_watch_app/products_srch.html', context=context)
