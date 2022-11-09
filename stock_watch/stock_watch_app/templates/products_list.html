@@ -38,6 +38,12 @@
             {{msg}}
         </div>
         {% endif%}
+        {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>WARNING: </strong>
+            {{msg}}
+        </div>
+        {% endif%}
         {% endfor %}
         {% endif %}
         <div class="card-body">

@@ -76,7 +76,7 @@ def srch_gtin(request:HttpRequest):
         if list_product:
             context = {'product_list': list_product}
         else: 
-            messages.error(request, "This GTIN is not registered")
+            messages.warning(request, "This GTIN is not registered")
             return redirect('/StockWatch/')
 
     return render(request, 'products_list.html', context=context)
