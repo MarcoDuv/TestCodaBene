@@ -7,7 +7,8 @@ from .models import Product
 
 
 def list_products(request):
-    return render(request, 'stock_watch_app/products_list.html')
+    all_gtin = {'product_list': Product.objects.all()}
+    return render(request, 'stock_watch_app/products_list.html', context=all_gtin)
 
 def insert_gtin(request:HttpRequest):
     ''' View to insert a new gtin by user '''
@@ -39,15 +40,22 @@ def srch_gtin(request:HttpRequest):
 
     gtin_asked = request.POST['gtinasked']
     
-    # Check if the gtin is a number
+    # Check if the gtin is valid
     try:
         gtin_asked = int(request.POST['gtinasked']) #TODO Sort by date
     except ValueError:
-        messages.error(request, "This GTIN doesn't exist")
-        gtin_asked = None
+        if gtin_asked == '':    # If it's empty we display all the products (ie: delete filter)
+            context = {'product_list': Product.objects.all()}
+        else:
+            messages.error(request, "GTIN must be a number")
+            context = None
+    # If it's valid, check if it's in BDD
+    else: 
+        list_product = Product.objects.filter(gtin = gtin_asked)
+        if list_product:
+            context = {'product_list': list_product}
+        else: 
+            messages.error(request, "This GTIN is not registered")
+            context = None
 
-    # Check if the gtin exists
-    if gtin_asked is not None:
-        gtin_asked = {'product_list': Product.objects.filter(gtin = gtin_asked)}
-
-    return render(request, 'stock_watch_app/products_list.html', context=gtin_asked)
+    return render(request, 'stock_watch_app/products_list.html', context=context)
