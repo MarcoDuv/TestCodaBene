@@ -77,5 +77,5 @@ def srch_gtin(request:HttpRequest):
 
     return render(request, 'stock_watch_app/products_list.html', context=context)
 
-def logo_link(request):
+def home_link(request):
     return redirect('/stock_watch_app/list/')
