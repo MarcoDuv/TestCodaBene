@@ -16,24 +16,25 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <form action="{% url 'srchgtin'%}" method="post" autocomplete="off">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="srchgtin">GTIN</label>
-                        <input type="text" class="form-control" id="srchgtin" name="gtinasked" placeholder="Search GTIN">
+    <div class="card">
+        <div class="card-header">
+            <h1> <i class="fa-solid fa-eye"></i> STOCKWATCH </h1>
+        </div>
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-3">
+                        <form action="{% url 'srchgtin'%}" method="post" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="srchgtin">GTIN</label>
+                                <input type="text" class="form-control" id="srchgtin" name="gtinasked"
+                                    placeholder="Search GTIN">
+                            </div>
+                            <button type="submit" class="btn btn-primary my-2">Search</button>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </form>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <h1> <i class="fa-solid fa-eye"></i> STOCKWATCH </h1>
-                    </div>
-                    <div class="card-body">
+                    <div class="col">
                         <div class="table-wrapper-scroll-y my-custom-scrollbar">
                             <table class="table table-bordered table-striped mb-0">
                                 <thead>
@@ -59,8 +60,8 @@
             </div>
         </div>
     </div>
-    <div class="card">
-        <div class="card-header">
+    <div class="card mx-auto my-5" style="width: 18rem;">
+        <div class="card-header text-center">
             <h4> <i class="fa-sharp fa-solid fa-cart-plus"></i> Add GTIN </h4>
         </div>
         <div class="card-body">
@@ -74,7 +75,7 @@
                     <label for="inputDateGtin">Expiring date</label>
                     <input type="date" class="form-control" id="inputDateGtin" name="date" placeholder="Enter Date">
                 </div>
-                <button type="submit" class="btn btn-primary">Add GTIN</button>
+                <button type="submit" class="btn btn-primary my-2">Add GTIN</button>
             </form>
         </div>
     </div>
