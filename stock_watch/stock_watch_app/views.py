@@ -8,7 +8,9 @@ from .models import Product
 
 
 def list_products(request):
-    all_gtin = {'product_list': Product.objects.all()}
+    order_by = request.GET.get('order_by', 'date')
+    all_product = Product.objects.all().order_by(order_by)
+    all_gtin = {'product_list': all_product}
     return render(request, 'stock_watch_app/products_list.html', context=all_gtin)
 
 def insert_gtin(request:HttpRequest):
@@ -57,7 +59,8 @@ def srch_gtin(request:HttpRequest):
         else:
             messages.error(request, "GTIN must be a number")
             context = None
-    # If it's valid, check if it's in BDD
+
+    # If it's valid, check if it's in the BDD
     else: 
         list_product = Product.objects.filter(gtin = gtin_asked)
         if list_product:
@@ -67,3 +70,6 @@ def srch_gtin(request:HttpRequest):
             context = None
 
     return render(request, 'stock_watch_app/products_srch.html', context=context)
+
+def logo_link(request):
+    return redirect('/stock_watch_app/list/')

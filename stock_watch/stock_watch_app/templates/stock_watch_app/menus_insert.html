@@ -1,0 +1,21 @@
+<div class="card mx-auto my-5">
+    <div class="card-header text-center">
+        <h4> <i class="fa-sharp fa-solid fa-cart-plus"></i> Add Product </h4>
+    </div>
+    <div class="card-body">
+        <form action="{% url 'insertgtin'%}" method="post" autocomplete="off">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="inputGtin">GTIN</label>
+                <input type="text" class="form-control" id="inputGtin" name="gtin"
+                    placeholder="Enter GTIN">
+            </div>
+            <div class="form-group">
+                <label for="inputDateGtin">Expiring date</label>
+                <input type="date" class="form-control" id="inputDateGtin" name="date"
+                    placeholder="Enter Date">
+            </div>
+            <button type="submit" class="btn btn-primary my-2">Add Product</button>
+        </form>
+    </div>
+</div>
