@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect, HttpRequest
 from django.contrib import messages
+import psycopg2
 import datetime
 from .models import Product
 
@@ -32,7 +33,7 @@ def insert_gtin(request:HttpRequest):
     if (new_gtin is not None) & (date is not None):
         try:
             existing_product = Product.objects.get(gtin = new_gtin)
-        except:
+        except Product.DoesNotExist:
             new_product = Product(gtin = new_gtin, date = request.POST['date'])
             new_product.save()
             messages.success(request, "GTIN created sucessfully")
