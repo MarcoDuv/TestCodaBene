@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect, HttpRequest
+from django.contrib import messages
+import datetime
 from .models import Product
+
 
 def list_products(request):
     return render(request, 'stock_watch_app/products_list.html')
@@ -12,26 +15,39 @@ def insert_gtin(request:HttpRequest):
     # Check if the gtin is a number
     try:
         new_gtin =  int(request.POST['gtin'])
-    except:
+    except ValueError:
         new_gtin = None
+        messages.error(request, "This GTIN is not a number")
 
-    #TODO Check if it fit the shape of a gtin
+    #TODO Check if it fits the shape of a gtin
+
+    # Check the date format
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        messages.error(request, "Wrong date format, should be YYYY-MM-DD")
+        date = None
 
     if (new_gtin is not None) & (date is not None):
         product = Product(gtin = new_gtin, date = request.POST['date'])
         product.save()
+        messages.success(request, "New GTIN added successfully")
     return redirect('/stock_watch_app/list/')
 
 def srch_gtin(request:HttpRequest):
     ''' The view that gets the gtin asked by user '''
+
     gtin_asked = request.POST['gtinasked']
+    
     # Check if the gtin is a number
     try:
-        gtin_asked = int(request.POST['gtinasked'])
-    except:
+        gtin_asked = int(request.POST['gtinasked']) #TODO Sort by date
+    except ValueError:
+        messages.error(request, "This GTIN doesn't exist")
         gtin_asked = None
 
     # Check if the gtin exists
     if gtin_asked is not None:
         gtin_asked = {'product_list': Product.objects.filter(gtin = gtin_asked)}
+
     return render(request, 'stock_watch_app/products_list.html', context=gtin_asked)

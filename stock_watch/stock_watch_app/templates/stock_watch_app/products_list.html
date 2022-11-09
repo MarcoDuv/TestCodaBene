@@ -22,7 +22,7 @@
         </div>
         <div class="card-body">
             <div class="container">
-                <div class="row">
+                <div class="row align-items-center">
                     <div class="col-3">
                         <form action="{% url 'srchgtin'%}" method="post" autocomplete="off">
                             {% csrf_token %}
@@ -40,7 +40,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">
-                                            <h3>Expiring dates of product XXX:</h5>
+                                            <h3>Expiring dates of product {{product_list.0.gtin}}:</h5>
                                         </th>
                                     </tr>
                                 </thead>
@@ -60,6 +60,22 @@
             </div>
         </div>
     </div>
+    {% if messages %}
+    {% for msg in messages %}
+    {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>ERROR: </strong>
+        {{msg}}
+    </div>
+    {% endif %}
+    {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>SUCCESS: </strong>
+        {{msg}}
+    </div>
+    {% endif%}
+    {% endfor %}
+    {% endif %}
     <div class="card mx-auto my-5" style="width: 18rem;">
         <div class="card-header text-center">
             <h4> <i class="fa-sharp fa-solid fa-cart-plus"></i> Add GTIN </h4>
