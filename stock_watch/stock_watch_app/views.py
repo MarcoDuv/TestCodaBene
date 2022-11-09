@@ -43,7 +43,7 @@ def insert_gtin(request:HttpRequest):
             existing_product.date = date
             existing_product.save()
             messages.success(request, "GTIN updated sucessfully")
-    return redirect('/stock_watch_app/list/')
+    return redirect('/StockWatch/')
 
 def srch_gtin(request:HttpRequest):
     ''' The view that gets the gtin asked by user '''
@@ -55,16 +55,16 @@ def srch_gtin(request:HttpRequest):
         gtin_asked = int(request.POST.get('gtinasked'))
     except TypeError:
         if query is None: # If it's none we go back to the list display
-            return redirect('/stock_watch_app/list/')
+            return redirect('/StockWatch/')
         else:
             messages.error(request, "Type Error for GTIN")
-            return redirect('/stock_watch_app/list/')
+            return redirect('/StockWatch/')
     except ValueError:
         if query == '':    # If it's empty we display all the products (ie: delete filter)
-            return redirect('/stock_watch_app/list/')
+            return redirect('/StockWatch/')
         else:
             messages.error(request, "GTIN must be a number")
-            return redirect('/stock_watch_app/list/')
+            return redirect('/StockWatch/')
 
     # If it's valid, check if it's in the BDD
     else: 
@@ -73,9 +73,9 @@ def srch_gtin(request:HttpRequest):
             context = {'product_list': list_product}
         else: 
             messages.error(request, "This GTIN is not registered")
-            return redirect('/stock_watch_app/list/')
+            return redirect('/StockWatch/')
 
     return render(request, 'stock_watch_app/products_list.html', context=context)
 
 def home_link(request):
-    return redirect('/stock_watch_app/list/')
+    return redirect('/StockWatch/')
