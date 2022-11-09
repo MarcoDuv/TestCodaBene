@@ -20,3 +20,7 @@ urlpatterns = [
     path('StockWatch/', include('stock_watch_app.urls')),
     path('admin/', admin.site.urls)
 ]
+
+# add a flag for
+# handling the 404 error
+handler404 = 'stock_watch_app.views.error_404_view'
