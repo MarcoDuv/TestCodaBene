@@ -1,0 +1,34 @@
+<div class="table-wrapper-scroll-y my-custom-scrollbar" style = "position: relative; height: 500px; overflow: auto;">
+    <table class="table table-bordered table-striped mb-0">
+        <thead>
+            <tr>
+                <th scope="col">
+                    <h4><a href="?order_by=gtin"><i class="fa-solid fa-sort-up mx-2"></i></a>GTIN</h4>
+                </th>
+                <th scope="col">
+                    <h4><a href="?order_by=date"><i class="fa-solid fa-sort-up mx-2"></i></a>Expiring Date</h4>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in product_list %}
+            <tr>
+                <th scope="row"> {{product.gtin}} </th>
+                {% if  time_danger >= product.date %}
+                <td>
+                    <h6 style="color: red"> {{product.date}} </h6>
+                </td>
+                {% elif time_warning >= product.date%}
+                <td>
+                    <h6 style="color: orange"> {{product.date}} </h6>
+                </td>
+                {% else %}
+                <td>
+                    <h6> {{product.date}} </h6>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

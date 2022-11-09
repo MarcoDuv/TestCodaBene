@@ -1,5 +1,3 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,13 +10,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'stock_watch_app/styles.css' %}" />
 </head>
 
 <body>
     <div class="card">
         <div class="card-header">
-            <a href="home_link/"> <img src="https://i.ibb.co/myfLmkH/stockwatch.png" alt="stockwatch" alt="stockwatch" width="400"> </a> 
+            <div class="row">
+                <div class="col">
+                    <a href="home_link/"> <img src="https://i.ibb.co/myfLmkH/stockwatch.png" alt="stockwatch" alt="stockwatch" width="400"> </a>
+                </div>
+                <div class="col-auto my-auto">
+                    <h4 style="color: #1C54FF"> {{today}} </h4>
+                </div>
+            </div>
         </div>
         {% if messages %}
         {% for msg in messages %}
@@ -43,30 +47,9 @@
                         {% include "./menus.html" %}
                         {% endblock %}
                     <div class="col">
-                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                            <table class="table table-bordered table-striped mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">
-                                            <h4><a href="?order_by=gtin"><i class="fa-solid fa-sort-up mx-2"></i></a>GTIN</h4>
-                                        </th>
-                                        <th scope="col">
-                                            <h4><a href="?order_by=date"><i class="fa-solid fa-sort-up mx-2"></i></a>Expiring Date</h4>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for product in product_list %}
-                                    <tr>
-                                        <th scope="row"> {{product.gtin}} </th>
-                                        <td>
-                                            <h6> {{product.date}} </h6>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                        {% block lsit %}
+                        {% include "./table_products.html" %}
+                        {% endblock %}
                     </div>
                 </div>
             </div>

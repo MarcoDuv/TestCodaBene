@@ -3,15 +3,19 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect, HttpRequest
 from django.contrib import messages
 import psycopg2
-import datetime
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
 from .models import Product
 
+TRESHOLD_DAYS_DANGER = date.today() + timedelta(days=1)
+TRESHOLD_DAYS_WARNING = date.today() + timedelta(days=3)
 
 def list_products(request):
     order_by = request.GET.get('order_by', 'date')
     all_product = Product.objects.all().order_by(order_by)
-    all_gtin = {'product_list': all_product}
-    return render(request, 'stock_watch_app/products_list.html', context=all_gtin)
+    context = {'product_list': all_product, 'time_danger': TRESHOLD_DAYS_DANGER, 'time_warning':TRESHOLD_DAYS_WARNING, 'today': date.today()}
+    return render(request, 'products_list.html', context=context)
 
 def insert_gtin(request:HttpRequest):
     ''' View to insert a new gtin by user '''
@@ -27,7 +31,7 @@ def insert_gtin(request:HttpRequest):
 
     # Check the date format
     try:
-        datetime.datetime.strptime(date, '%Y-%m-%d')
+        datetime.strptime(date, '%Y-%m-%d')
     except ValueError:
         messages.error(request, "Wrong date format, should be YYYY-MM-DD")
         date = None
@@ -75,7 +79,7 @@ def srch_gtin(request:HttpRequest):
             messages.error(request, "This GTIN is not registered")
             return redirect('/StockWatch/')
 
-    return render(request, 'stock_watch_app/products_list.html', context=context)
+    return render(request, 'products_list.html', context=context)
 
 def home_link(request):
     return redirect('/StockWatch/')
@@ -84,4 +88,7 @@ def error_404_view(request, exception):
    
     # we add the path to the the 404.html file
     # here. The name of our HTML file is 404.html
-    return render(request, 'stock_watch_app/404.html')
+    return render(request, '404.html')
+
+def tag(a,b):
+    return a+b
