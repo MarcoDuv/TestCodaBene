@@ -23,7 +23,7 @@ from .helpers import get_product_from_request
 TRESHOLD_DAYS_DANGER = date.today() + timedelta(days=1)
 TRESHOLD_DAYS_WARNING = date.today() + timedelta(days=3)
 
-def list_products(request: HttpRequest) -> HttpResponse:
+def home(request: HttpRequest) -> HttpResponse:
     """Views called on a request on the main page of the app.
 
     It takes in DB the list of all products and add it in the context of the response returned.
@@ -42,7 +42,7 @@ def list_products(request: HttpRequest) -> HttpResponse:
                 'time_danger': TRESHOLD_DAYS_DANGER,
                 'time_warning':TRESHOLD_DAYS_WARNING,
                 'today': date.today()}
-    return render(request, 'products_list.html', context=context)
+    return render(request, 'home.html', context=context)
 
 def insert_gtin(request:HttpRequest) -> HttpResponseRedirect:
     """Views called  when there is a request of user trying to insert a new product.
@@ -128,7 +128,7 @@ def srch_gtin(request:HttpRequest) -> Union[HttpResponseRedirect, HttpRequest]:
             messages.warning(request, "This GTIN is not registered")
             return redirect('/StockWatch/')
 
-    return render(request, 'products_list.html', context=context)
+    return render(request, 'home.html', context=context)
 
 def home_link(request):
     """View called on a request raised when user click on a link that redirect to the main page
