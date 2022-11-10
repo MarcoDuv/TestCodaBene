@@ -1,28 +1,66 @@
+'''
+ # @ Author: Marco Duvacher
+ # @ Create Time: 2022-11-08 15:45:42
+ # @ Modified by: Marco Duvacher
+ # @ Modified time: 2022-11-10 10:02:43
+ # @ Description: Contain all the views usefull for the application
+ (ie: Python functions or classes that receive a web request and return a web response)
+ '''
+
+#region -------------------- IMPORTS -----------------------------------
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect, HttpRequest
 from django.contrib import messages
-import psycopg2
+from typing import Union
 from datetime import date
 from datetime import datetime
 from datetime import timedelta
 from .models import Product
+from .helpers import get_product_from_request
+#endregion -------------------------------------------------------------
 
 TRESHOLD_DAYS_DANGER = date.today() + timedelta(days=1)
 TRESHOLD_DAYS_WARNING = date.today() + timedelta(days=3)
 
-def list_products(request):
-    order_by = request.GET.get('order_by', 'date')
-    all_product = Product.objects.all().order_by(order_by)
-    context = {'product_list': all_product, 'time_danger': TRESHOLD_DAYS_DANGER, 'time_warning':TRESHOLD_DAYS_WARNING, 'today': date.today()}
+def list_products(request: HttpRequest) -> HttpResponse:
+    """Views called on a request on the main page of the app.
+
+    It takes in DB the list of all products and add it in the context of the response returned.
+    It puts also in the response some datetime.date constants
+    used to know if the product expiring date is close enoug.
+
+    Args:
+        request (HttpRequest): contains data about the request (optional content: order_by )
+
+    Returns:
+        HttpResponse: The Http response containing the related html and context
+        (contains -> product_list: QuerySet[Product], time_danger, time_warning, today: DateTime.date)
+    """
+    all_product = get_product_from_request(request)
+    context = { 'product_list': all_product,
+                'time_danger': TRESHOLD_DAYS_DANGER,
+                'time_warning':TRESHOLD_DAYS_WARNING,
+                'today': date.today()}
     return render(request, 'products_list.html', context=context)
 
-def insert_gtin(request:HttpRequest):
-    ''' View to insert a new gtin by user '''
-    date = request.POST['date']
+def insert_gtin(request:HttpRequest) -> HttpResponseRedirect:
+    """Views called  when there is a request of user trying to insert a new product.
+
+    It checks the Gtin and date format, then check if it is already in DB.
+    If yes: Update the date of the corresponding GTIN
+    If no: Create a new product.
+
+    Args:
+        request (HttpRequest): contains data about the request (requires: date & gtin)
+
+    Returns:
+        HttpResponseRedirect: Redirect to another URL (here the main page of the app)
+    """
+    date = request.POST.get('date')
     # Check if the gtin is a number
     try:
-        new_gtin =  int(request.POST['gtin'])
+        new_gtin =  int(request.POST.get('gtin'))
     except ValueError:
         new_gtin = None
         messages.error(request, "This GTIN is not a number")
@@ -49,14 +87,25 @@ def insert_gtin(request:HttpRequest):
             messages.success(request, "GTIN updated sucessfully")
     return redirect('/StockWatch/')
 
-def srch_gtin(request:HttpRequest):
-    ''' The view that gets the gtin asked by user '''
+def srch_gtin(request:HttpRequest) -> Union[HttpResponseRedirect, HttpRequest]:
+    """ View called on a request of input user in the GTIN search field. 
+
+    It checks if the gtin is correct, then if it is in DB and return the adapated response. 
+
+    Args:
+        request (HttpRequest): contains data about the request (requires: date & gtin)
+
+    Returns:
+         Union[HttpResponseRedirect, HttpRequest]: 
+         Either a response that redirects to the home page (if wrong gtin asked) or
+         a response that renders to the URL which display the filtered gtin (if right one)
+    """
     
     query = request.POST.get('gtinasked')
 
     # Check if the gtin is valid
     try:
-        gtin_asked = int(request.POST.get('gtinasked'))
+        gtin_asked = int(query)
     except TypeError:
         if query is None: # If it's none we go back to the list display
             return redirect('/StockWatch/')
@@ -82,13 +131,24 @@ def srch_gtin(request:HttpRequest):
     return render(request, 'products_list.html', context=context)
 
 def home_link(request):
+    """View called on a request raised when user click on a link that redirect to the main page
+
+    Args:
+        request (HttpRequest): The request raised on a home page link click
+
+    Returns:
+        HttpResponseRedirect: Change the current URL to the main page app one
+    """
     return redirect('/StockWatch/')
 
 def error_404_view(request, exception):
-   
-    # we add the path to the the 404.html file
-    # here. The name of our HTML file is 404.html
-    return render(request, '404.html')
+    """View called on a 404 error request
 
-def tag(a,b):
-    return a+b
+    Args:
+        request (HttpRequest): contains data of the request
+        exception (Exception): (unused here)
+
+    Returns:
+        HttpResponse: http response to display the 404.html page
+    """
+    return render(request, '404.html')
