@@ -7,13 +7,9 @@
  '''
 #region -------------------- IMPORT -----------------------------------
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect, HttpRequest
+from django.http import  HttpRequest
 from django.contrib import messages
-import psycopg2
-from datetime import date
 from datetime import datetime
-from datetime import timedelta
 from .models import Product
 #endregion -------------------- IMPORT --------------------------------
 

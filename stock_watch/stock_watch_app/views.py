@@ -89,7 +89,7 @@ def srch_gtin(request:HttpRequest) -> Union[HttpResponseRedirect, HttpRequest]:
     """
     
     query = request.POST.get('gtinasked')
-
+    #TODO put the check part in helpers.py
     # Check if the gtin is valid
     try:
         gtin_asked = int(query)
