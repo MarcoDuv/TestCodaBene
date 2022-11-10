@@ -18,6 +18,10 @@ from datetime import datetime
 from datetime import timedelta
 from .models import Product
 from .helpers import get_product_from_request
+from .helpers import get_gtin_from_request
+from .helpers import get_date_from_request
+from .helpers import create_new_product_in_base
+from .helpers import update_product_in_base
 #endregion -------------------------------------------------------------
 
 TRESHOLD_DAYS_DANGER = date.today() + timedelta(days=1)
@@ -57,34 +61,17 @@ def insert_gtin(request:HttpRequest) -> HttpResponseRedirect:
     Returns:
         HttpResponseRedirect: Redirect to another URL (here the main page of the app)
     """
-    date = request.POST.get('date')
-    # Check if the gtin is a number
-    try:
-        new_gtin =  int(request.POST.get('gtin'))
-    except ValueError:
-        new_gtin = None
-        messages.error(request, "This GTIN is not a number")
 
-    #TODO Check if it fits the shape of a gtin
+    new_gtin = get_gtin_from_request(request)
+    new_date = get_date_from_request(request)
 
-    # Check the date format
-    try:
-        datetime.strptime(date, '%Y-%m-%d')
-    except ValueError:
-        messages.error(request, "Wrong date format, should be YYYY-MM-DD")
-        date = None
-
-    if (new_gtin is not None) & (date is not None):
+    if (new_gtin is not None) & (new_date is not None):
         try:
             existing_product = Product.objects.get(gtin = new_gtin)
         except Product.DoesNotExist:
-            new_product = Product(gtin = new_gtin, date = request.POST['date'])
-            new_product.save()
-            messages.success(request, "GTIN created sucessfully")
+            create_new_product_in_base(request, new_gtin, new_date)
         else:
-            existing_product.date = date
-            existing_product.save()
-            messages.success(request, "GTIN updated sucessfully")
+            update_product_in_base(request, existing_product, new_date)
     return redirect('/StockWatch/')
 
 def srch_gtin(request:HttpRequest) -> Union[HttpResponseRedirect, HttpRequest]:

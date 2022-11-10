@@ -31,23 +31,56 @@ def get_product_from_request(request):
     all_product = Product.objects.all().order_by(order_by)
     return all_product
 
-def is_valid_gtin(gtin_to_test) -> tuple[bool, str]:
+def get_gtin_from_request(request) -> int:
     '''
-    Check if the gtin given in input has a correct type
+    Check if the gtin given is correct and return it or None if it's wrong
     '''
     try:
-        int(gtin_to_test)
-    except TypeError:
-        if gtin_to_test is None: # If it's none we go back to the list display
-            return 0
-        else:
-            err_msg = "Type Error for GTIN"
-            return 0, err_msg
+        gtin_to_test =  int(request.POST.get('gtin'))
     except ValueError:
-        if gtin_to_test == '':    # If it's empty we display all the products (ie: delete filter)
-            return 0
-        else:
-            err_msg = "GTIN must be a number"
-            return 0, err_msg
-    else:
-        return 1, None
+        gtin_to_test = None
+        messages.error(request, "This GTIN is not a number")
+    return gtin_to_test
+
+def get_date_from_request(request) -> tuple[bool, str]:
+    '''
+    Check if the date given is correct and return it or None if it's wrong
+    '''
+    date = request.POST.get('date')
+    # Check the date format
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        messages.error(request, "Wrong date format, should be YYYY-MM-DD")
+        date = None
+    return date
+
+def create_new_product_in_base(request: HttpRequest, new_gtin: int, new_date: datetime.date):
+    """_summary_
+
+    Args:
+        request (HttpRequest): request that asked to create a new product
+        new_gtin (int): gtin of the new product
+        new_date (datetime.date): date of the new product
+    """
+    new_product = Product(gtin = new_gtin, date = new_date)
+    try:
+        new_product.save()
+    except Exception as e:
+        messages.error(request, f"Failed to created in base, error: {e}")
+    messages.success(request, "GTIN created sucessfully")
+
+def update_product_in_base(request: HttpRequest, product_to_update: Product, new_date: datetime.date):
+    """Update the date of a product in Base
+
+    Args:
+        request (HttpRequest): the request of the update
+        product_to_update (Product): the product to update
+        new_date (datetime.date): the new date of the product
+    """
+    product_to_update.date = new_date
+    try:
+        product_to_update.save()
+    except Exception as e:
+        messages.error(request, f"Failed to update in base, error: {e}")
+    messages.success(request, "GTIN updated sucessfully")
