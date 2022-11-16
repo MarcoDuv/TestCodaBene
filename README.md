@@ -20,6 +20,8 @@ For more information you can check the page: https://docs.djangoproject.com/en/4
 ## How to use:
 ### Run the server
 Go to your terminal and type: *python ./manage.py runserver* Then you should be able to ctrl+click on the http adress displayed (or copy/past it)
+### Migration error
+If there is an error on Migration you need to delete files in migration folder and run the next command line: *py.exe ./manage.py makemigrations*
 
 ### Debug:
 To be able to debug the application, go into the settings.py and change *DEBUG = False* into *DEBUG = True* and *ALLOWED_HOSTS = ['\*']* into *ALLOWED_HOSTS = []*
